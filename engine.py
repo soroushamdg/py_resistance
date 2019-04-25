@@ -1,8 +1,11 @@
 '''
+https://en.wikipedia.org/wiki/The_Resistance_(game)
     here we define our objects
 '''
 from random import shuffle
+import random
 import datetime
+import math
 def generate_id(obj):
     return str(obj) + datetime.datetime.now().strftime("%YHIMS")
 class player():
@@ -101,6 +104,38 @@ class resistanceEngine(object):
         self.missions = {}
 
     def setupNewPlayer():
-        name = input("Please write new player's name : ")
-        id = generate_id('p')
-        players[id] = player(id,name,'UNKNOWN')
+        if count(players.keys) <= 10:
+            name = input("Please write new player's name : ")
+            id = generate_id('p')
+            players[id] = player(id,name,'UNKNOWN')
+            print(f"{name} added! :D")
+            return True
+        else:
+            print("You have maximum players")
+            return False
+    def players():
+        for player in players.values:
+            print(player.name)
+    def setActs():
+        if count(players) <= 10 and count(players) >= 5:
+            full = players.keys
+            selected = []
+            for i in range(0,math.floor(count(players)*2/3)):
+                sid = random.choice(full)
+                selected.append(sid)
+                players[sid].act = 'RESISTANCE'
+                full.remove(sid)
+            for i in full:
+                sid = i
+                selected.append(sid)
+                players[sid].act = 'SPY'
+                full.remove(sid)
+            return True
+        else:
+            print("you don't have enough players")
+            return False
+    def print_board():
+        pass
+    def start():
+        while True:
+            input = input("what to do?")
