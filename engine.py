@@ -98,12 +98,12 @@ class resistanceEngine(object):
     """docstring for resistanceEngine.
     This class is the main core of the game.
     """
-
+    mission_soldier_law = [[],[0,0,0,0,0,2,2,2,3,3,3],[0,0,0,0,0,3,3,3,4,4,4],[0,0,0,0,0,2,4,3,4,4,4],[0,0,0,0,0,3,3,4,5,5,5],[0,0,0,0,0,3,4,4,5,5,5]]
     def __init__(self):
         self.players = {}
         self.missions = {}
 
-    def setupNewPlayer():
+    def setupNewPlayer(self):
         if count(players.keys) <= 10:
             name = input("Please write new player's name : ")
             id = generate_id('p')
@@ -113,10 +113,10 @@ class resistanceEngine(object):
         else:
             print("You have maximum players")
             return False
-    def players():
+    def players(self):
         for player in players.values:
             print(player.name)
-    def setActs():
+    def setActs(self):
         if count(players) <= 10 and count(players) >= 5:
             full = players.keys
             selected = []
@@ -134,8 +134,12 @@ class resistanceEngine(object):
         else:
             print("you don't have enough players")
             return False
-    def print_board():
+    def print_board(self):
         pass
-    def start():
-        while True:
-            input = input("what to do?")
+    def start(self):
+        if setActs() == True:
+            while(count(missions)<5):
+
+            pass
+        else:
+            return
