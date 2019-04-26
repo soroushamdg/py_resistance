@@ -29,39 +29,40 @@ class player():
         if self.act == 'spy':
             while True:
                 vote = input(f'player {self.name} you should vote for PASS or FAIL :')
-                if vote.lowercase() == 'fail' or vote == 'pass':
+                if vote.lower() == 'fail' or vote == 'pass':
                     return vote
                     break
                 else:
-                    print('Bad language, please try again.')
+                    print('Bad language, you can just type : pass or fail, please try again.')
                     continue
         elif self.act == 'resistance':
             while True:
                 vote = input(f'player {self.name} you should vote ONLY for PASS:')
-                if vote.lowercase() == 'pass':
+                if vote.lower() == 'pass':
                     return vote
                     break
                 else:
-                    print('Bad language, please try again.')
+                    print('Bad language, you can just type : pass or fail please try again.')
                     continue
 
 class mission():
     """ mission object will containt : result - voters ids - votes"""
 
-    def __init__(self, m_ID,m_leader, m_voterIDs):
+    def __init__(self, m_ID,m_leader, m_voters_names,m_voters):
         self.id = m_ID
         self.leader = m_leader
-        self.voterIDs = m_voterIDs
+        self.voters_names = m_voters_names
+        self.voters = m_voters
 
     def __str__(self):
-        return f'player {self.leader} defined this misson with following players :\n {player.name for player in self.voterIDs}'
+        return f'player {self.leader} defined this misson with following players :',*self.voters_names,sep='\n'
 
     def askForMissionVote(self):
         '''
             This function will ask leader if all other players are ok with the mission, it will return True or False
         '''
-        vote = input(f'Is everybody okay with the mission with {player.name for player in self.voterIDs} following players?(Y/N)')
-        if vote.lowercase() == 'y':
+        vote = input(f'Is everybody okay with the mission with {} ?(Y/N)'.format(' ,'.join(self.voters_names)))
+        if vote.lower() == 'y':
             return True
         else:
             return False
@@ -71,10 +72,10 @@ class mission():
          This function will start mission and ask in-mission players for their votes.
         '''
         votes = []
-        for player in voterIDs:
+        for player in voters:
             votes.append(player.voteForMission())
         for vote in votes:
-            if vote.lowercase() == 'fail':
+            if vote.lower() == 'fail':
                 return False
         return True
 
@@ -139,7 +140,7 @@ class resistanceEngine(object):
     def start(self):
         if setActs() == True:
             while(count(missions)<5):
+                pass
 
-            pass
         else:
             return
