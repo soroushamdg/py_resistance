@@ -140,19 +140,18 @@ class resistanceEngine(object):
             print(player.name)
     #should really change it
     def setActs(self):
-        if len(players) <= 10 and len(players) >= 5:
-            full = self.players
-            selected = []
-            for i in range(0,math.floor(len(players)*2/3)):
-                sid = random.choice(full)
-                selected.append(sid)
-                self.players[sid].act = 'RESISTANCE'
-                full.remove(sid)
-            for i in full:
-                sid = i
-                selected.append(sid)
-                self.players[sid].act = 'SPY'
-                full.remove(sid)
+        if len(self.players) <= 10 and len(self.players) >= 5:
+        	#math.floor(len(players)*2/3)
+        	new_list = self.players
+    		random.shuffle(new_list)
+    		random.shuffle(new_list)
+    		random.shuffle(new_list)
+    		for i in range(0,math.floor(len(self.players)*2/3)):
+    		    new_list[i].act = 'resistance'
+   			for k in range(math.floor(len(self.players)*2/3),len(self.players)):
+        		new_list[k].act = 'spy'
+    		self.players = new_list
+    		del new_list
             return True
         elif len(players) >= 10:
             print("you have too much players, maximum is 10.")
