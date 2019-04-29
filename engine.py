@@ -112,7 +112,7 @@ class next_mission_leader():
         shuffle(self.players)
     def nextLeader(self):
         round += 1
-        return players[round % count(players)].name
+        return players[round % len(players)].name
 
 
 
@@ -126,7 +126,7 @@ class resistanceEngine(object):
         self.missions = []
 
     def setupNewPlayer(self):
-        if count(players.keys) <= 10:
+        if len(players.keys) <= 10:
             name = input("Please write new player's name : ")
             id = generate_id('p')
             players.append(obj_player(id,name,'UNKNOWN'))
@@ -140,10 +140,10 @@ class resistanceEngine(object):
             print(player.name)
     #should really change it
     def setActs(self):
-        if count(players) <= 10 and count(players) >= 5:
+        if len(players) <= 10 and len(players) >= 5:
             full = self.players
             selected = []
-            for i in range(0,math.floor(count(players)*2/3)):
+            for i in range(0,math.floor(len(players)*2/3)):
                 sid = random.choice(full)
                 selected.append(sid)
                 self.players[sid].act = 'RESISTANCE'
@@ -154,15 +154,18 @@ class resistanceEngine(object):
                 self.players[sid].act = 'SPY'
                 full.remove(sid)
             return True
-        else:
-            print("you don't have enough players")
+        elif len(players) >= 10:
+            print("you have too much players, maximum is 10.")
             return False
+        else:
+            print("you don't have enough players.")
+            retrun False
     def print_board(self):
         pass
     def start(self):
         if setActs() == True:
             next_mission_leader_generator = next_mission_leader(players.keys)
-            while(count(missions)<5):
+            while(len(missions)<5):
                 clear()
                 while True
                     new_mission = obj_mission(m_id=generate_id('m'),m_leader=next_mission_leader_generator.nextLeader(),m_voters_names=[],m_voters=[])
