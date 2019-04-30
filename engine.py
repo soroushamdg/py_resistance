@@ -7,6 +7,7 @@ import random
 import datetime
 import math
 import ast
+import os
 from os import system, name
 class color:
    PURPLE = '\033[95m'
@@ -81,7 +82,7 @@ class obj_mission():
         '''
             This function will ask leader if all other players are ok with the mission, it will return True or False
         '''
-        vote = input(f'Is everybody okay with the mission with {} ?(Y/N)'.format(' ,'.join(self.voters_names)))
+        vote = input('Is everybody okay with the mission with {} ?(Y/N)'.format(' ,'.join(self.voters_names)))
         if vote.lower() == 'y':
             return True
         else:
@@ -128,57 +129,57 @@ class resistanceEngine(object):
         self.missions = []
 
     def setupNewPlayer(self):
-        if len(players.keys) <= 10:
+        if len(self.players) <= 10:
             name = input("Please write new player's name : ")
             id = generate_id('p')
-            players.append(obj_player(id,name,'UNKNOWN'))
+            self.players.append(obj_player(id,name,'UNKNOWN'))
             print(f"{name} added! :D")
             return True
         else:
             print("You have maximum players")
             return False
-    def players(self):
-        for player in players.values:
+    def print_players(self):
+        for player in self.players:
             print(player.name)
     #should really change it
     def setActs(self):
         if len(self.players) <= 10 and len(self.players) >= 5:
-        	new_list = self.players
-    		shuffle(new_list)
-    		shuffle(new_list)
-    		shuffle(new_list)
-    		for i in range(0,math.floor(len(self.players)*2/3)):
-    		    new_list[i].act = 'resistance'
-   			for k in range(math.floor(len(self.players)*2/3),len(self.players)):
-        		new_list[k].act = 'spy'
-    		self.players = new_list
+            new_list = self.players
+            shuffle(new_list)
+            shuffle(new_list)
+            shuffle(new_list)
+            for i in range(0,math.floor(len(self.players)*2/3)):
+                new_list[i].act = 'resistance'
+            for k in range(math.floor(len(self.players)*2/3),len(self.players)):
+                new_list[k].act = 'spy'
+            self.players = new_list
             return True
-        elif len(players) >= 10:
+        elif len(self.players) >= 10:
             print("you have too much players, maximum is 10.")
             return False
         else:
             print("you don't have enough players.")
-            retrun False
+            return False
     def print_board(self):
         print ('\n')
         print(color.BOLD + color.RED + 'ROUND : '+next_mission_leader_generator.round + color.END)
-        mission_board = f'{'\t'+mission.result+'\t |' for mission in self.missions}'
+        mission_board = '\t'+ f"{mission.result for mission in self.missions}"
         print (mission_board)
         print ('_'*len(mission_board))
         print('\nPLAYERS : ')
-        for player in players:
+        for player in self.players:
             print(player.name)
             print ('_'*len(mission_board))
 
     def start(self):
-        if setActs() == True:
+        if self.setActs() == True:
             next_mission_leader_generator = next_mission_leader(self.players)
             next_mission_leader_generator.setup()
-            while(len(missions)<5):
+            while(len(self.missions)<5):
                 clear()
                 while True:
                     clear()
-                    print_board()
+                    self.print_board()
                     new_mission = obj_mission(m_id=generate_id('m'),
                         m_leader=next_mission_leader_generator.nextLeader(),
                         m_voters_names=None,
@@ -194,7 +195,7 @@ class resistanceEngine(object):
                         input_mission_players = input('input player indexes like -> [3,2,5] : ')
                         list_mission_players = ast.literal_eval(input_mission_players)
                         #here checks if user entered enough players
-                        if len(list_mission_players) != mission_soldier_law[len(players)][len(missions)]:
+                        if len(list_mission_players) != mission_soldier_law[len(self.players)][len(self.missions)]:
                             clear()
                             continue
                         new_mission.voters = [self.players[i-1] for i in list_mission_players]
@@ -210,10 +211,10 @@ class resistanceEngine(object):
                         else:
                             print(color.BOLD + color.RED + '\t'*2 + 'MISSION FAILED'+color.END)
                         self.missions.append(new_mission)
-                    if len(missions) == 5 :
+                    if len(self.missions) == 5 :
                         break
             else:
-                print_board()
+                self.print_board()
                 #here engine checks final results if spies or resistances won.
                 pass
         else:
