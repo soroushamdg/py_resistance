@@ -75,7 +75,7 @@ class obj_mission():
         self.voters = m_voters
         self.result = None
     def __str__(self):
-        return f'player {self.leader} defined this misson with following players :',*self.voters_names,sep='\n'
+        return 'player {self.leader} defined this mission with following players :'.formant(*self.voters_names,sep='\n')
 
     def askForMissionVote(self):
         '''
@@ -143,17 +143,15 @@ class resistanceEngine(object):
     #should really change it
     def setActs(self):
         if len(self.players) <= 10 and len(self.players) >= 5:
-        	#math.floor(len(players)*2/3)
         	new_list = self.players
-    		random.shuffle(new_list)
-    		random.shuffle(new_list)
-    		random.shuffle(new_list)
+    		shuffle(new_list)
+    		shuffle(new_list)
+    		shuffle(new_list)
     		for i in range(0,math.floor(len(self.players)*2/3)):
     		    new_list[i].act = 'resistance'
    			for k in range(math.floor(len(self.players)*2/3),len(self.players)):
         		new_list[k].act = 'spy'
     		self.players = new_list
-    		del new_list
             return True
         elif len(players) >= 10:
             print("you have too much players, maximum is 10.")
