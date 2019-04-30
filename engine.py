@@ -74,6 +74,7 @@ class obj_mission():
         self.leader = m_leader
         self.voters_names = m_voters_names
         self.voters = m_voters
+        self.votes = []
         self.result = None
     def __str__(self):
         return 'player {self.leader} defined this mission with following players :'.formant(*self.voters_names,sep='\n')
@@ -92,10 +93,9 @@ class obj_mission():
         '''
          This function will start mission and ask in-mission players for their votes.
         '''
-        votes = []
-        for player in voters:
-            votes.append(player.voteForMission())
-        for vote in votes:
+        for player in self.voters:
+            self.votes.append(player.voteForMission())
+        for vote in self.votes:
             if vote.lower() == 'fail':
                 self.result = 'FAIL'
                 return False
@@ -114,8 +114,9 @@ class next_mission_leader():
     def setup(self):
         shuffle(self.players)
     def nextLeader(self):
-        round += 1
-        return players[round % len(players)].name
+        self.round = self.round + 1
+        index = int(self.round) % int(len(self.players))
+        return self.players[index].name
 
 
 
@@ -123,16 +124,16 @@ class resistanceEngine(object):
     """docstring for resistanceEngine.
     This class is the main core of the game.
     """
-    mission_soldier_law = [[],[0,0,0,0,0,2,2,2,3,3,3],[0,0,0,0,0,3,3,3,4,4,4],[0,0,0,0,0,2,4,3,4,4,4],[0,0,0,0,0,3,3,4,5,5,5],[0,0,0,0,0,3,4,4,5,5,5]]
     def __init__(self):
         self.players = []
         self.missions = []
-
+        self.next_mission_leader_generator = None
+        self.mission_soldier_law = [[],[0,0,0,0,0,2,2,2,3,3,3],[0,0,0,0,0,3,3,3,4,4,4],[0,0,0,0,0,2,4,3,4,4,4],[0,0,0,0,0,3,3,4,5,5,5],[0,0,0,0,0,3,4,4,5,5,5]]
     def setupNewPlayer(self):
         if len(self.players) <= 10:
             name = input("Please write new player's name : ")
             id = generate_id('p')
-            self.players.append(obj_player(id,name,'UNKNOWN'))
+            self.players.append(obj_player(id,name,None))
             print(f"{name} added! :D")
             return True
         else:
@@ -162,7 +163,7 @@ class resistanceEngine(object):
             return False
     def print_board(self):
         print ('\n')
-        print(color.BOLD + color.RED + 'ROUND : '+next_mission_leader_generator.round + color.END)
+        print(color.BOLD + color.RED + 'ROUND : '+str(self.next_mission_leader_generator.round) + color.END)
         mission_board = '\t'+ f"{mission.result for mission in self.missions}"
         print (mission_board)
         print ('_'*len(mission_board))
@@ -173,29 +174,33 @@ class resistanceEngine(object):
 
     def start(self):
         if self.setActs() == True:
-            next_mission_leader_generator = next_mission_leader(self.players)
-            next_mission_leader_generator.setup()
+            self.next_mission_leader_generator = next_mission_leader(self.players)
+            self.next_mission_leader_generator.setup()
             while(len(self.missions)<5):
                 clear()
                 while True:
                     clear()
                     self.print_board()
-                    new_mission = obj_mission(m_id=generate_id('m'),
-                        m_leader=next_mission_leader_generator.nextLeader(),
-                        m_voters_names=None,
-                        m_voters=None)
+                    new_mission = obj_mission(m_ID=generate_id('m'),m_leader=self.next_mission_leader_generator.nextLeader(),m_voters_names=None,m_voters=None)
                     while True:
                         print('\t'*2+color.BOLD+color.YELLOW+'The Leaders is : \n'+color.END+'\t'*2+new_mission.leader)
-                        print('\t'*2+f'You choose {mission_soldier_law[len(self.players)][len(self.missions)]} players')
+                        print('\t'*2+f'You choose {self.mission_soldier_law[len(self.missions)+1][len(self.players)]} players')
                         print('Please choose you\'d you like to go to mission?')
                         z = 0
                         for player in self.players:
                             print(f'{z}. {player.name}')
-                        z += 1
-                        input_mission_players = input('input player indexes like -> [3,2,5] : ')
+                            z += 1
+                        while True:
+                            try:
+                                input_mission_players = input('input player indexes like -> [3,2,5] : ')
+                            except:
+                                print('Wrong entry, try again.')
+                                continue
+                            else:
+                                break
                         list_mission_players = ast.literal_eval(input_mission_players)
                         #here checks if user entered enough players
-                        if len(list_mission_players) != mission_soldier_law[len(self.players)][len(self.missions)]:
+                        if len(list_mission_players) != self.mission_soldier_law[len(self.missions)+1][len(self.players)]:
                             clear()
                             continue
                         new_mission.voters = [self.players[i-1] for i in list_mission_players]
