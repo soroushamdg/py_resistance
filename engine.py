@@ -171,7 +171,7 @@ class resistanceEngine(object):
         for player in players:
             print(player.name)
             print ('_'*len(mission_board))
-        
+
     def start(self):
         if setActs() == True:
             next_mission_leader_generator = next_mission_leader(self.players)
@@ -212,6 +212,11 @@ class resistanceEngine(object):
                         else:
                             print(color.BOLD + color.RED + '\t'*2 + 'MISSION FAILED'+color.END)
                         self.missions.append(new_mission)
+                    if len(missions) == 5 :
+                        break
+            else:
+                print_board()
+                #here engine checks final results if spies or resistances won.
                 pass
         else:
             return
