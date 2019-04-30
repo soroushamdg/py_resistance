@@ -73,7 +73,7 @@ class obj_mission():
         self.leader = m_leader
         self.voters_names = m_voters_names
         self.voters = m_voters
-
+        self.result = None
     def __str__(self):
         return f'player {self.leader} defined this misson with following players :',*self.voters_names,sep='\n'
 
@@ -96,7 +96,9 @@ class obj_mission():
             votes.append(player.voteForMission())
         for vote in votes:
             if vote.lower() == 'fail':
+                self.result = 'FAIL'
                 return False
+        self.result = 'PASS'
         return True
 
 class next_mission_leader():
@@ -107,7 +109,7 @@ class next_mission_leader():
         self.round = 0
 
     def __str__(self):
-        return nextLeader
+        return nextLeader()
     def setup(self):
         shuffle(self.players)
     def nextLeader(self):
@@ -160,14 +162,29 @@ class resistanceEngine(object):
             print("you don't have enough players.")
             retrun False
     def print_board(self):
-        pass
+        print ('\n')
+        print(color.BOLD + color.RED + 'ROUND : '+next_mission_leader_generator.round + color.END)
+        mission_board = f'{'\t'+mission.result+'\t |' for mission in self.missions}'
+        print (mission_board)
+        print ('_'*len(mission_board))
+        print('\nPLAYERS : ')
+        for player in players:
+            print(player.name)
+            print ('_'*len(mission_board))
+        
     def start(self):
         if setActs() == True:
-            next_mission_leader_generator = next_mission_leader(players.keys)
+            next_mission_leader_generator = next_mission_leader(self.players)
+            next_mission_leader_generator.setup()
             while(len(missions)<5):
                 clear()
-                while True
-                    new_mission = obj_mission(m_id=generate_id('m'),m_leader=next_mission_leader_generator.nextLeader(),m_voters_names=[],m_voters=[])
+                while True:
+                    clear()
+                    print_board()
+                    new_mission = obj_mission(m_id=generate_id('m'),
+                        m_leader=next_mission_leader_generator.nextLeader(),
+                        m_voters_names=None,
+                        m_voters=None)
                     while True:
                         print('\t'*2+color.BOLD+color.YELLOW+'The Leaders is : \n'+color.END+'\t'*2+new_mission.leader)
                         print('\t'*2+f'You choose {mission_soldier_law[len(self.players)][len(self.missions)]} players')
@@ -195,11 +212,6 @@ class resistanceEngine(object):
                         else:
                             print(color.BOLD + color.RED + '\t'*2 + 'MISSION FAILED'+color.END)
                         self.missions.append(new_mission)
-
-
-
-
                 pass
-
         else:
             return
