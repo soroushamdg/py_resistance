@@ -164,7 +164,10 @@ class resistanceEngine(object):
     def print_board(self):
         print ('\n')
         print(color.BOLD + color.RED + 'ROUND : '+str(self.next_mission_leader_generator.round) + color.END)
-        mission_board = '\t'+ f"{mission.result for mission in self.missions}"
+        mission_board = '\t'
+        for i in self.missions:
+            mission_board += i.result
+            mission_board += '\t |'
         print (mission_board)
         print ('_'*len(mission_board))
         print('\nPLAYERS : ')
